@@ -1,0 +1,85 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{distalgpseudocode}[2020/09/14 Distributed Algorithm Pseudocode]
+
+\RequirePackage{ifthen}
+
+\newboolean{DISTALG@noend}
+\setboolean{DISTALG@noend}{false}
+\DeclareOption{noend}{\setboolean{DISTALG@noend}{true}}
+\ProcessOptions\relax
+
+\ifthenelse{\boolean{DISTALG@noend}}%
+    {\RequirePackage[noend]{algpseudocode}}%
+    {\RequirePackage{algpseudocode}}%
+
+\RequirePackage{minibox}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{scalerel}
+
+\newcommand{\Message}[2]{#1$\langle$#2$\rangle$}
+
+\renewcommand*\Call[2]{\textproc{#1}(#2)}
+
+\newcommand*\Init[2]{\Statex #1 $\gets$ #2}
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+\newcommand*\Signal[2]{\State \textbf{signal}\ \textproc{#1}$\left(\minibox{#2}\right)$}
+
+\newcommand{\Now}{\textbf{now}()}
+\newcommand*\StartTimer[2]{\State \Call{Start}{#1, #2}}
+\newcommand*\StartTimerAt[3]{\State \Call{StartAt}{#1, #2, #3}}
+\newcommand*\TimerFiredAt[1]{\Call{TimerFiredAt}{#1}}
+\newcommand{\IsTimerRunning}[1]{\Call{IsRunning}{#1}}
+\newcommand{\StopTimer}[1]{\State \Call{Stop}{#1}}
+
+\algnewcommand\algorithmicreceive{\textbf{receive}}
+\algnewcommand\algorithmicsnoop{\textbf{snoop}}
+\algnewcommand\algorithmictimeout{\textbf{timeout}}
+\algnewcommand\algorithmicevent{\textbf{event}}
+
+\algdef{SE}[RECEIVE]{Receive}{EndReceive}[2]{\algorithmicreceive\ \mbox{#1}$\left\langle\minibox{#2}\right\rangle$ $\rightarrow$}{\algorithmicend\ \algorithmicreceive}%
+\algdef{SE}[RECEIVEFROM]{ReceiveFrom}{EndReceive}[3]{\algorithmicreceive\ \mbox{#1}$\left\langle\minibox{#2}\right\rangle$ \textbf{from} #3 $\rightarrow$}{\algorithmicend\ \algorithmicreceive}%
+\algdef{SE}[SNOOP]{Snoop}{EndSnoop}[2]{\algorithmicsnoop\ \mbox{#1}$\left\langle\minibox{#2}\right\rangle$ $\rightarrow$}{\algorithmicend\ \algorithmicsnoop}%
+\algdef{SE}[SNOOPFROM]{SnoopFrom}{EndSnoop}[3]{\algorithmicsnoop\ \mbox{#1}$\left\langle\minibox{#2}\right\rangle$ \textbf{from} #3 $\rightarrow$}{\algorithmicend\ \algorithmicsnoop}%
+\algdef{SE}[TIMEOUT]{Timeout}{EndTimeout}[1]{\algorithmictimeout\ (\mbox{#1}) $\rightarrow$}{\algorithmicend\ \algorithmictimeout}%
+\algdef{SE}[TIMEOUTAT]{TimeoutAt}{EndTimeout}[2]{\algorithmictimeout\ (\mbox{#1}) \textbf{at} #2 $\rightarrow$}{\algorithmicend\ \algorithmictimeout}%
+\algdef{SE}[EVENT]{Event}{EndEvent}[2]{\algorithmicevent\ \textproc{#1}$\left({#2}\right)$ $\rightarrow$}{\algorithmicend\ \algorithmicevent}%
+\algdef{SE}[CONDEVENT]{CondEvent}{EndCondEvent}[2]{\algorithmicevent\ \textproc{#1} :: #2 $\rightarrow$}{\algorithmicend\ \algorithmicevent}%
+
+\ifthenelse{\boolean{DISTALG@noend}}%
+{%
+\algtext*{EndReceive}%
+\algtext*{EndSnoop}%
+\algtext*{EndTimeout}%
+\algtext*{EndEvent}%
+\algtext*{EndCondEvent}%
+}{}%
+
+\newcommand*\Broadcast[2]{\mbox{\textbf{bcast}~\mbox{#1}$\left\langle\minibox{#2}\right\rangle$}}
+\newcommand*\SendTo[3]{\mbox{\textbf{send}~\mbox{#1}$\left\langle\minibox{#2}\right\rangle$~to~#3}}
+
+% From: https://tex.stackexchange.com/questions/169598/how-to-indent-long-comment-continuation-in-the-algorithmicx-pseudocode
+\makeatletter
+\newlength{\trianglerightwidth}
+\settowidth{\trianglerightwidth}{$\triangleright$~}
+\algnewcommand{\LineComment}[1]{\Statex \hskip\ALG@thistlm $\triangleright$ #1}
+\algnewcommand{\LineCommentCont}[1]{\Statex \hskip\ALG@thistlm%
+  \parbox[t]{\dimexpr\linewidth-\ALG@thistlm}{\hangindent=\trianglerightwidth \hangafter=1 \strut$\triangleright$ #1\strut}}
+\makeatother
+
+% From: https://tex.stackexchange.com/questions/398410/a-symbol-like-a-hourglass
+\makeatletter
+\newcommand{\hourglass}{\mathbin{\scalerel*{\@hgpic}{\ensuremath{\Sigma}}}}% Or \Sigma, or any symbol you want to scale to.
+\newcommand{\@hgpic}{%
+    \setlength{\unitlength}{0.34cm}% reduce this to increase thickness of line
+    \begin{picture}(1,1.5)%
+    \thicklines%
+    \put(0,0){\line(2,3){1}}%
+    \put(1,1.5){\line(-1,0){1}}%
+    \put(0,1.5){\line(2,-3){1}}%
+    \put(1,0){\line(-1,0){1}}%
+    \end{picture}%
+}
+\makeatother
+
+\endinput

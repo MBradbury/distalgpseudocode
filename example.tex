@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage[noend]{distalgpseudocode}
+\usepackage{algorithm}
+\begin{document}
+
+\begin{algorithm}[t]
+	\caption{Send, receive and eavesdrop example}
+	\label{alg:algo1}
+	\begin{algorithmic}[1]
+	
+	\Function{fn}{}
+	    \LineComment{Use to broadcast a message}
+	    \State \Broadcast{MessageName}{parameters}
+	    
+	    \LineComment{Use to unicast a message to a specific target}
+        \State \SendTo{MessageName}{parameters}{target}
+	\EndFunction
+	
+	\Statex
+	
+	\LineComment{Use to receive a message}
+	\Event{MessageName}{parameters}
+        \State \ldots
+    \EndEvent
+    
+    \Statex
+	
+	\LineComment{Use to receive a message and also be aware of the source}
+	\ReceiveFrom{MessageName}{parameters}{source}
+        \State \ldots
+    \EndReceive
+    
+    \Statex
+    
+    \LineComment{Use to eavesdrop a message}
+    \Snoop{MessageName}{parameters}
+        \State \ldots
+    \EndSnoop
+    
+    \Statex
+    
+    \LineComment{Use to eavesdrop a message and also be aware of the source}
+    \SnoopFrom{MessageName}{parameters}{source}
+        \State \ldots
+    \EndSnoop
+
+	\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[t]
+	\caption{Event signalling and triggering}
+	\label{alg:algo2}
+	\begin{algorithmic}[1]
+	
+	\Function{fn}{}
+	    \LineComment{Use to signal that an even has occurred}
+	    \Signal{EventName}{parameters}
+	\EndFunction
+	
+	\Statex
+	
+	\LineComment{Use to handle an event}
+	\Event{EventName}{parameters}
+        \State \ldots
+    \EndEvent
+    
+    \Statex
+	
+	\LineComment{Some events may not occur when a signal happens, but may be specified with a predicate that must be true for them to be triggered. This is inspired by Guarded Command Notation}
+	\CondEvent{ConditionalEventName}{predicate}
+        \State \ldots
+    \EndCondEvent
+
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+	\caption{Timers}
+	\label{alg:algo3}
+	\begin{algorithmic}[1]
+	
+	\Function{fn}{}
+	    \Let{TimerName}{$\hourglass$} \Comment{Initialise a timer}
+	    \State \Now{} \Comment{Get the current time}
+	    \State \StartTimer{TimerName}{10} \Comment{Start the timer to expire in 10 time units}
+	    \State \StartTimerAt{TimerName}{10}{5} \Comment{Start the timer to expire in 10 time units after 5}
+	    \State \IsTimerRunning{TimerName} \Comment{Is the timer running?}
+	    \StopTimer{TimerName} \Comment{Stop the timer}
+	\EndFunction
+	
+	\Statex
+    
+    \LineComment{Use to handle a timeout}
+	\Timeout{TimerName}
+	    \Let{t}{\TimerFiredAt{TimerName}} \Comment{When was this timer fired}
+        \State \ldots
+    \EndTimeout
+    
+    \Statex
+	
+	\LineComment{Use to handle a timeout and get the time at which the timeout occurred}
+    \TimeoutAt{TimerName}{time}
+        \State \ldots
+    \EndTimeout
+
+	\end{algorithmic}
+\end{algorithm}
+
+\end{document}
